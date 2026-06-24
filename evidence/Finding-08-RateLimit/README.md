@@ -1,4 +1,4 @@
-# Finding 8 — No Rate Limiting on Authentication
+# Finding 8 - No Rate Limiting on Authentication
 
 > Redacted evidence screenshots for this finding. Flag values, the target domain, credentials, tokens, and personal data are blurred. See the [full report](../../REPORT.md) for context.
 

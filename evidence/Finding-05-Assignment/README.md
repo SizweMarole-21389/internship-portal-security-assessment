@@ -1,4 +1,4 @@
-# Finding 5 — Assignment Logic Flaws
+# Finding 5 - Assignment Logic Flaws
 
 > Redacted evidence screenshots for this finding. Flag values, the target domain, credentials, tokens, and personal data are blurred. See the [full report](../../REPORT.md) for context.
 

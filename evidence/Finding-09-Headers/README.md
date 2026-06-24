@@ -1,4 +1,4 @@
-# Finding 9 — Missing HTTP Security Headers
+# Finding 9 - Missing HTTP Security Headers
 
 > Redacted evidence screenshots for this finding. Flag values, the target domain, credentials, tokens, and personal data are blurred. See the [full report](../../REPORT.md) for context.
 

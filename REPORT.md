@@ -1,4 +1,4 @@
-# Web Application Security Assessment — Internship Application Portal
+# Web Application Security Assessment - Internship Application Portal
 
 > **Sanitised lab report.** This is a redacted, educational write-up of a black-box
 > web application penetration test performed against a deliberately vulnerable
@@ -10,7 +10,7 @@
 **Assessor:** Sizwe Marole
 **Assessment type:** Black-box web application penetration test
 **Target (anonymised):** `interns.target.local`
-**Date of assessment:** 05–15 June 2026
+**Date of assessment:** 05-15 June 2026
 **Report version:** 2.0 (sanitised for public release)
 
 ---
@@ -19,7 +19,7 @@
 
 A black-box penetration test was conducted against an internship application portal
 from the position of a registered intern with no access to source code or backend
-configuration — the same starting point available to any external attacker. The
+configuration - the same starting point available to any external attacker. The
 entire web application was in scope; the underlying hosting infrastructure was out of
 scope. Ten vulnerabilities were identified: **four High, one Medium, four Low, and one
 Informational.**
@@ -40,7 +40,7 @@ because the refresh token remains valid and a new session can be minted from it.
 
 The end result is full account takeover and a level of access a normal intern should
 never have. As it stands the portal is critically vulnerable and should not go live
-until the High-risk issues are fixed — in order: file upload, SQL injection, then the
+until the High-risk issues are fixed - in order: file upload, SQL injection, then the
 access-control and cross-site-scripting issues.
 
 ---
@@ -51,7 +51,7 @@ access-control and cross-site-scripting issues.
 |---|---------|----------|-----------|-----|------------|
 | 1 | Unrestricted File Upload → Remote Code Execution | **High** | 8.8 | CWE-434 | A03 / A05 |
 | 2 | Error-Based SQL Injection (profile update) | **High** | 8.1 | CWE-89 | A03 |
-| 3 | IDOR — Unauthorised Access to Any Profile | **High** | 6.5 | CWE-639 | A01 |
+| 3 | IDOR - Unauthorised Access to Any Profile | **High** | 6.5 | CWE-639 | A01 |
 | 4 | Stored Cross-Site Scripting (surname field) | **High** | 6.1 | CWE-79 | A03 |
 | 5 | Assignment Logic Flaws (scoring / retakes) | Low | 4.3 | CWE-840 | A04 |
 | 6 | JWT Refresh Token Not Invalidated on Logout | Medium | 5.3 | CWE-613 | A07 |
@@ -99,10 +99,10 @@ are classified using **CWE**, mapped to the **OWASP Top 10 (2021)**, and scored 
 
 ## Findings
 
-### Finding 1: Unrestricted File Upload — Remote Code Execution and Unauthenticated CV Access
+### Finding 1: Unrestricted File Upload - Remote Code Execution and Unauthenticated CV Access
 
 **Severity:** High &nbsp;|&nbsp; **CVSS v3.1:** 8.8 (`AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`)
-**CWE:** CWE-434 — Unrestricted Upload of File with Dangerous Type
+**CWE:** CWE-434 - Unrestricted Upload of File with Dangerous Type
 **OWASP Top 10 (2021):** A03:2021 Injection · A05:2021 Security Misconfiguration
 **Proof captured:** Yes (marker value redacted)
 
@@ -117,7 +117,7 @@ by anyone who knows the UUID.
 **Reproduction Steps:**
 
 1. Register an account and log in.
-2. Intercept a CV upload in Burp Suite — **POST /api/v1/profile/cv**, form field **cv**.
+2. Intercept a CV upload in Burp Suite - **POST /api/v1/profile/cv**, form field **cv**.
 3. Set the filename to **shell.php**, the Content-Type to **application/x-php**, and the body to:
 
    ```php
@@ -134,7 +134,7 @@ attacker runs commands as **www-data** and can read database credentials, every 
 CV, the application source, and environment secrets, then pivot further into the hosting
 environment. No privilege escalation is needed, which makes this the most damaging issue in
 the report. Code execution also lets the attacker change or delete data, tamper with other
-users' records, deface the portal, or take the site offline — so the damage spans integrity
+users' records, deface the portal, or take the site offline - so the damage spans integrity
 and availability as well as data theft. The CVs and personal records exposed here are
 personal information under POPIA, and serving them with no authentication is a direct failure
 of the security safeguards Section 19 of the Act requires. South African CVs usually carry an
@@ -146,39 +146,39 @@ Regulator and affected data subjects.
 
 ![Baseline CV upload accepted](evidence/Finding-01-RCE/SS-F01-02_pdf-uploaded-profile.png)
 
-*__Figure 1.1__ — Baseline CV upload accepted.*
+*__Figure 1.1__ - Baseline CV upload accepted.*
 
 ![Server returns 201 Created on upload](evidence/Finding-01-RCE/SS-F01-03_pdf-upload-201.png)
 
-*__Figure 1.2__ — Server returns 201 Created on upload.*
+*__Figure 1.2__ - Server returns 201 Created on upload.*
 
 ![Profile API returns the stored file UUID](evidence/Finding-01-RCE/SS-F01-04_profile-uuid-response.png)
 
-*__Figure 1.3__ — Profile API returns the stored file UUID.*
+*__Figure 1.3__ - Profile API returns the stored file UUID.*
 
 ![Uploaded file reachable at /cv-view/ with no auth](evidence/Finding-01-RCE/SS-F01-05_cvview-pdf-accessible.png)
 
-*__Figure 1.4__ — Uploaded file reachable at /cv-view/ with no auth.*
+*__Figure 1.4__ - Uploaded file reachable at /cv-view/ with no auth.*
 
 ![shell.php upload accepted with 201](evidence/Finding-01-RCE/SS-F01-10_shell-php-confirmed.png)
 
-*__Figure 1.5__ — Shell.php upload accepted with 201.*
+*__Figure 1.5__ - Shell.php upload accepted with 201.*
 
 ![id returns uid=33(www-data), confirming RCE](evidence/Finding-01-RCE/SS-F01-12_rce-uid-www-data.png)
 
-*__Figure 1.6__ — Id returns uid=33(www-data), confirming RCE.*
+*__Figure 1.6__ - Id returns uid=33(www-data), confirming RCE.*
 
 ![Directory listing via the webshell](evidence/Finding-01-RCE/SS-F01-14_rce-cvview-ls-la.png)
 
-*__Figure 1.7__ — Directory listing via the webshell.*
+*__Figure 1.7__ - Directory listing via the webshell.*
 
 ![/etc/passwd read through the webshell](evidence/Finding-01-RCE/SS-F01-15_rce-etc-passwd.png)
 
-*__Figure 1.8__ — /etc/passwd read through the webshell.*
+*__Figure 1.8__ - /etc/passwd read through the webshell.*
 
 ![Listing of /var/www via the webshell](evidence/Finding-01-RCE/SS-F01-16_rce-var-www-ls.png)
 
-*__Figure 1.9__ — Listing of /var/www via the webshell.*
+*__Figure 1.9__ - Listing of /var/www via the webshell.*
 
 **Remediation:** Validate uploads by file content, not the client-supplied filename or
 Content-Type. For PDFs, verify the **%PDF** magic bytes. Discard the original filename and
@@ -190,7 +190,7 @@ serve them through an authenticated download handler that rejects unauthenticate
 ### Finding 2: Error-Based SQL Injection in Profile Update Endpoint
 
 **Severity:** High &nbsp;|&nbsp; **CVSS v3.1:** 8.1 (`AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:N`)
-**CWE:** CWE-89 — Improper Neutralization of Special Elements used in an SQL Command
+**CWE:** CWE-89 - Improper Neutralization of Special Elements used in an SQL Command
 **OWASP Top 10 (2021):** A03:2021 Injection
 **Proof captured:** Yes (marker value redacted)
 
@@ -246,39 +246,39 @@ Section 22 obligation to notify the Information Regulator and affected data subj
 
 ![Single quote returns a raw MariaDB syntax error](evidence/Finding-02-SQLi/SS-F02-02_sqli-syntax-error.png)
 
-*__Figure 2.1__ — Single quote returns a raw MariaDB syntax error.*
+*__Figure 2.1__ - Single quote returns a raw MariaDB syntax error.*
 
 ![extractvalue leaks the MariaDB version](evidence/Finding-02-SQLi/SS-F02-03_sqli-version-mariadb.png)
 
-*__Figure 2.2__ — Extractvalue leaks the MariaDB version.*
+*__Figure 2.2__ - Extractvalue leaks the MariaDB version.*
 
 ![Schema enumeration via information_schema](evidence/Finding-02-SQLi/SS-F02-04_sqli-database-enum.png)
 
-*__Figure 2.3__ — Schema enumeration via information_schema.*
+*__Figure 2.3__ - Schema enumeration via information_schema.*
 
 ![Table enumeration in the active database](evidence/Finding-02-SQLi/SS-F02-06_sqli-table-enum.png)
 
-*__Figure 2.4__ — Table enumeration in the active database.*
+*__Figure 2.4__ - Table enumeration in the active database.*
 
 ![Discovery of the users table](evidence/Finding-02-SQLi/SS-F02-10_sqli-table-enum-users.png)
 
-*__Figure 2.5__ — Discovery of the users table.*
+*__Figure 2.5__ - Discovery of the users table.*
 
 ![Discovery of the assignments table](evidence/Finding-02-SQLi/SS-F02-11_sqli-table-enum-assignments.png)
 
-*__Figure 2.6__ — Discovery of the assignments table.*
+*__Figure 2.6__ - Discovery of the assignments table.*
 
 ![Discovery of the user_answers table](evidence/Finding-02-SQLi/SS-F02-12_sqli-table-enum-user-answers.png)
 
-*__Figure 2.7__ — Discovery of the user_answers table.*
+*__Figure 2.7__ - Discovery of the user_answers table.*
 
 ![Discovery of the cvs table](evidence/Finding-02-SQLi/SS-F02-13_sqli-table-enum-cvs.png)
 
-*__Figure 2.8__ — Discovery of the cvs table.*
+*__Figure 2.8__ - Discovery of the cvs table.*
 
 ![Discovery of the token_blocklist table](evidence/Finding-02-SQLi/SS-F02-14_sqli-table-enum-token-blocklist.png)
 
-*__Figure 2.9__ — Discovery of the token_blocklist table.*
+*__Figure 2.9__ - Discovery of the token_blocklist table.*
 
 **Remediation:** Use parameterised statements for every query that includes user input,
 across the whole codebase, so SQL logic is separated from data. Stop returning raw database
@@ -286,10 +286,10 @@ errors to clients; log full error details server-side only.
 
 ---
 
-### Finding 3: Insecure Direct Object Reference — Unauthorised Access to Any Profile
+### Finding 3: Insecure Direct Object Reference - Unauthorised Access to Any Profile
 
 **Severity:** High &nbsp;|&nbsp; **CVSS v3.1:** 6.5 (`AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N`) · engagement severity High
-**CWE:** CWE-639 — Authorization Bypass Through User-Controlled Key
+**CWE:** CWE-639 - Authorization Bypass Through User-Controlled Key
 **OWASP Top 10 (2021):** A01:2021 Broken Access Control
 **Proof captured:** Yes (marker value redacted)
 
@@ -314,7 +314,7 @@ providing a complete target list.
 
 **Business Impact:** The leaderboard lists the nicknames of all 120+ interns, and any one can
 be passed to **?nickname=** to read that user's name, email, university, degree, and CV
-filename — using nothing more than a standard intern token. The exposure covers every
+filename - using nothing more than a standard intern token. The exposure covers every
 registered user, not just the administrator account. The CV filenames returned here also feed
 the unauthenticated download in Finding 1, so a profile read is enough to then retrieve each
 candidate's actual documents. On its own, the disclosure of names, emails, universities, and
@@ -326,31 +326,31 @@ download in Finding 1.
 
 ![Leaderboard page listing intern nicknames](evidence/Finding-03-IDOR/SS-F03-02_leaderboard-page.png)
 
-*__Figure 3.1__ — Leaderboard page listing intern nicknames.*
+*__Figure 3.1__ - Leaderboard page listing intern nicknames.*
 
 ![Leaderboard API response with full nickname list](evidence/Finding-03-IDOR/SS-F03-03_idor-leaderboard-nicknames.png)
 
-*__Figure 3.2__ — Leaderboard API response with full nickname list.*
+*__Figure 3.2__ - Leaderboard API response with full nickname list.*
 
 ![Privileged profile returned to an intern token](evidence/Finding-03-IDOR/SS-F03-12_idor-admin-profile-flag.png)
 
-*__Figure 3.3__ — Privileged profile returned to an intern token.*
+*__Figure 3.3__ - Privileged profile returned to an intern token.*
 
 ![Another intern's full profile retrieved](evidence/Finding-03-IDOR/SS-F03-13_idor-intern001-response.png)
 
-*__Figure 3.4__ — Another intern's full profile retrieved.*
+*__Figure 3.4__ - Another intern's full profile retrieved.*
 
 ![A further intern profile retrieved](evidence/Finding-03-IDOR/SS-F03-15_idor-intern003-response.png)
 
-*__Figure 3.5__ — A further intern profile retrieved.*
+*__Figure 3.5__ - A further intern profile retrieved.*
 
 ![A further intern profile retrieved](evidence/Finding-03-IDOR/SS-F03-16_idor-intern005-response.png)
 
-*__Figure 3.6__ — A further intern profile retrieved.*
+*__Figure 3.6__ - A further intern profile retrieved.*
 
 ![Confirms the vulnerability scales across the user base](evidence/Finding-03-IDOR/SS-F03-18_idor-intern085-response.png)
 
-*__Figure 3.7__ — Confirms the vulnerability scales across the user base.*
+*__Figure 3.7__ - Confirms the vulnerability scales across the user base.*
 
 **Remediation:** Remove the **?nickname=** parameter and always return the authenticated
 user's own profile based on JWT claims. If lookups by nickname are genuinely required,
@@ -362,7 +362,7 @@ same server-side ownership check to every endpoint that returns object-scoped da
 ### Finding 4: Stored Cross-Site Scripting in the Surname Field
 
 **Severity:** High &nbsp;|&nbsp; **CVSS v3.1:** 6.1 (`AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N`) · engagement severity High
-**CWE:** CWE-79 — Improper Neutralization of Input During Web Page Generation
+**CWE:** CWE-79 - Improper Neutralization of Input During Web Page Generation
 **OWASP Top 10 (2021):** A03:2021 Injection
 **Proof captured:** Yes (marker value redacted)
 
@@ -407,34 +407,34 @@ so a script running in an administrator's session can read both tokens and exfil
 server the attacker controls. That gives account takeover, and through the refresh-token flaw in
 Finding 6, lasting access. The proof-of-concept only calls `alert(document.cookie)` to confirm
 execution; since the tokens are not in cookies, a real attack would read them from browser
-storage instead. The WAF gave false confidence — blocking well-known payloads while a trivial
+storage instead. The WAF gave false confidence - blocking well-known payloads while a trivial
 variant walked straight through.
 
 **Evidence:**
 
 ![Surname reflected unencoded; other fields entity-encoded](evidence/Finding-04-XSS/SS-F04-03_xss-field-comparison-browser.png)
 
-*__Figure 4.1__ — Surname reflected unencoded; other fields entity-encoded.*
+*__Figure 4.1__ - Surname reflected unencoded; other fields entity-encoded.*
 
 ![Baseline script-tag payload behaviour](evidence/Finding-04-XSS/SS-F04-04_xss-script-tag-profile-response.png)
 
-*__Figure 4.2__ — Baseline script-tag payload behaviour.*
+*__Figure 4.2__ - Baseline script-tag payload behaviour.*
 
 ![h4 bypass payload accepted at registration with 201](evidence/Finding-04-XSS/SS-F04-10_xss-h4-registration-201.png)
 
-*__Figure 4.3__ — H4 bypass payload accepted at registration with 201.*
+*__Figure 4.3__ - H4 bypass payload accepted at registration with 201.*
 
 ![Confirmation of the accepted payload](evidence/Finding-04-XSS/SS-F04-11_xss-h4-registration-201-2.png)
 
-*__Figure 4.4__ — Confirmation of the accepted payload.*
+*__Figure 4.4__ - Confirmation of the accepted payload.*
 
 ![Payload returned unencoded in the profile API response](evidence/Finding-04-XSS/SS-F04-15_xss-h4-profile-api.png)
 
-*__Figure 4.5__ — Payload returned unencoded in the profile API response.*
+*__Figure 4.5__ - Payload returned unencoded in the profile API response.*
 
 ![Stored payload rendered unencoded in the profile form](evidence/Finding-04-XSS/SS-F04-19_xss-patch-profile-browser.png)
 
-*__Figure 4.6__ — Stored payload rendered unencoded in the profile form.*
+*__Figure 4.6__ - Stored payload rendered unencoded in the profile form.*
 
 **Remediation:** Strip HTML from name fields on input and allow only letters, spaces, hyphens,
 and apostrophes. Apply context-aware output encoding when rendering user data. Treat the WAF as
@@ -442,21 +442,21 @@ a supplementary control only; blocklists are routinely bypassed.
 
 ---
 
-### Finding 5: Assignment Logic Flaws — Unenforced Scoring, Unlimited Retakes, and Weak Essay Grading
+### Finding 5: Assignment Logic Flaws - Unenforced Scoring, Unlimited Retakes, and Weak Essay Grading
 
 **Severity:** Low &nbsp;|&nbsp; **CVSS v3.1:** 4.3 (`AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N`)
-**CWE:** CWE-840 — Business Logic Errors
+**CWE:** CWE-840 - Business Logic Errors
 **OWASP Top 10 (2021):** A04:2021 Insecure Design
 **Proof captured:** Yes (marker value redacted)
 
 **Description:** The assignment system has several related logic flaws. The submission endpoint
 **POST /api/v1/assignments/1/submit** returns a protected marker in the raw response body
 regardless of score; it never appears in the web UI and is only visible by inspecting the
-response. Submitting deliberately wrong or low-scoring answers still returns it — a submission
+response. Submitting deliberately wrong or low-scoring answers still returns it - a submission
 scoring 32.6% with 3 of 9 MCQs correct returned it in full. Once an assignment is marked
 complete, calling the start endpoint again creates a fresh submission, allowing unlimited
-retakes. The essay grader also awards a high score to trivial input — a single-character essay
-scored roughly 88% — and submissions are accepted with no minimum time.
+retakes. The essay grader also awards a high score to trivial input - a single-character essay
+scored roughly 88% - and submissions are accepted with no minimum time.
 
 **Reproduction Steps:**
 
@@ -475,19 +475,19 @@ assessment, not access to other users' data or the system itself, so it is rated
 
 ![Assignment dashboard before submission](evidence/Finding-05-Assignment/SS-F05-01_assignment-dashboard.png)
 
-*__Figure 5.1__ — Assignment dashboard before submission.*
+*__Figure 5.1__ - Assignment dashboard before submission.*
 
 ![Submission confirmation in the web UI](evidence/Finding-05-Assignment/SS-F05-05_assignment-submit-confirm.png)
 
-*__Figure 5.2__ — Submission confirmation in the web UI.*
+*__Figure 5.2__ - Submission confirmation in the web UI.*
 
 ![Start endpoint called again after completion](evidence/Finding-05-Assignment/SS-F05-13_assignment-retake-unlimited.png)
 
-*__Figure 5.3__ — Start endpoint called again after completion.*
+*__Figure 5.3__ - Start endpoint called again after completion.*
 
 ![New submission issued, confirming unlimited retakes](evidence/Finding-05-Assignment/SS-F05-14_assignment-retake-confirmed.png)
 
-*__Figure 5.4__ — New submission issued, confirming unlimited retakes.*
+*__Figure 5.4__ - New submission issued, confirming unlimited retakes.*
 
 **Remediation:** Score submissions server-side and only return any completion token once a defined
 pass threshold is met. Reject any start call once a submission exists for that user and assignment.
@@ -499,7 +499,7 @@ time.
 ### Finding 6: JWT Refresh Token Not Invalidated on Logout
 
 **Severity:** Medium &nbsp;|&nbsp; **CVSS v3.1:** 5.3 (`AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N`)
-**CWE:** CWE-613 — Insufficient Session Expiration
+**CWE:** CWE-613 - Insufficient Session Expiration
 **OWASP Top 10 (2021):** A07:2021 Identification and Authentication Failures
 **Proof captured:** N/A
 
@@ -517,8 +517,8 @@ mint a new access token. Logout does not fully terminate the session.
 4. Send the retained refresh token to **POST /api/v1/auth/refresh**.
 5. The server returns a new, usable access token despite the logout.
 
-**Business Impact:** A captured refresh token — for example one stolen through the stored XSS in
-Finding 4 — keeps working for the attacker after the real user has logged out, and the user has no
+**Business Impact:** A captured refresh token - for example one stolen through the stored XSS in
+Finding 4 - keeps working for the attacker after the real user has logged out, and the user has no
 way to end their own session. This is the persistence step in the attack chain: one stolen token is
 no longer a one-time problem; it gives lasting access that survives the user logging out.
 
@@ -526,23 +526,23 @@ no longer a one-time problem; it gives lasting access that survives the user log
 
 ![Login issues both access and refresh tokens](evidence/Finding-06-JWT/SS-F06-01_login-response-tokens.png)
 
-*__Figure 6.1__ — Login issues both access and refresh tokens.*
+*__Figure 6.1__ - Login issues both access and refresh tokens.*
 
 ![Decoded token showing the jti and type claims](evidence/Finding-06-JWT/SS-F06-02_jwt-decoded.png)
 
-*__Figure 6.2__ — Decoded token showing the jti and type claims.*
+*__Figure 6.2__ - Decoded token showing the jti and type claims.*
 
 ![DELETE logout request with the access token](evidence/Finding-06-JWT/SS-F06-03_logout-request.png)
 
-*__Figure 6.3__ — DELETE logout request with the access token.*
+*__Figure 6.3__ - DELETE logout request with the access token.*
 
 ![Reused access token returns 401 TOKEN_REVOKED](evidence/Finding-06-JWT/SS-F06-05_access-token-blocked-401.png)
 
-*__Figure 6.4__ — Reused access token returns 401 TOKEN_REVOKED.*
+*__Figure 6.4__ - Reused access token returns 401 TOKEN_REVOKED.*
 
 ![Refresh token still mints a new access token after logout](evidence/Finding-06-JWT/SS-F06-06_refresh-token-new-access.png)
 
-*__Figure 6.5__ — Refresh token still mints a new access token after logout.*
+*__Figure 6.5__ - Refresh token still mints a new access token after logout.*
 
 **Remediation:** Blocklist both the access and refresh token **jti** on logout. The
 **token_blocklist** table already exists, so add one INSERT for the refresh token's **jti** in the
@@ -553,7 +553,7 @@ same logout request.
 ### Finding 7: Weak Password Policy
 
 **Severity:** Low &nbsp;|&nbsp; **CVSS v3.1:** 3.7 (`AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N`)
-**CWE:** CWE-521 — Weak Password Requirements
+**CWE:** CWE-521 - Weak Password Requirements
 **OWASP Top 10 (2021):** A07:2021 Identification and Authentication Failures
 **Proof captured:** N/A
 
@@ -574,7 +574,7 @@ credentials. The admin hash is subject to the same risk.
 
 ![Eight-digit numeric password accepted with 201 Created](evidence/Finding-07-WeakPassword/SS-F07-01_weak-password-accepted.png)
 
-*__Figure 7.1__ — Eight-digit numeric password accepted with 201 Created.*
+*__Figure 7.1__ - Eight-digit numeric password accepted with 201 Created.*
 
 **Remediation:** Add complexity rules to the existing length check (upper, lower, digit, special),
 enforced server-side. Optionally reject breached passwords via the HaveIBeenPwned k-anonymity API.
@@ -584,7 +584,7 @@ enforced server-side. Optionally reject breached passwords via the HaveIBeenPwne
 ### Finding 8: No Rate Limiting on Authentication
 
 **Severity:** Low &nbsp;|&nbsp; **CVSS v3.1:** 5.3 (`AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N`)
-**CWE:** CWE-307 — Improper Restriction of Excessive Authentication Attempts
+**CWE:** CWE-307 - Improper Restriction of Excessive Authentication Attempts
 **OWASP Top 10 (2021):** A07:2021 Identification and Authentication Failures
 **Proof captured:** N/A
 
@@ -605,7 +605,7 @@ against confirmed accounts with no server-side restriction.
 
 ![30 attempts all return 401 with no 429 or lockout](evidence/Finding-08-RateLimit/SS-F08-01_ratelimit-ffuf-bruteforce.png)
 
-*__Figure 8.1__ — 30 attempts all return 401 with no 429 or lockout.*
+*__Figure 8.1__ - 30 attempts all return 401 with no 429 or lockout.*
 
 **Remediation:** Apply per-account rate limiting as the primary control (per-IP limits are easily
 evaded by rotating addresses), and add a CAPTCHA or step-up challenge after repeated failures.
@@ -616,7 +616,7 @@ Return **429** with a retry-after header and apply temporary lockout or increasi
 ### Finding 9: Missing HTTP Security Headers
 
 **Severity:** Low &nbsp;|&nbsp; **CVSS v3.1:** 4.3 (`AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N`)
-**CWE:** CWE-693 — Protection Mechanism Failure · CWE-1021 — Improper Restriction of Rendered UI Layers
+**CWE:** CWE-693 - Protection Mechanism Failure · CWE-1021 - Improper Restriction of Rendered UI Layers
 **OWASP Top 10 (2021):** A05:2021 Security Misconfiguration
 **Proof captured:** N/A
 
@@ -639,11 +639,11 @@ rather than direct vulnerabilities.
 
 ![Login response shows none of the five security headers](evidence/Finding-09-Headers/SS-F09-01_missing-security-headers.png)
 
-*__Figure 9.1__ — Login response shows none of the five security headers.*
+*__Figure 9.1__ - Login response shows none of the five security headers.*
 
 ![Authenticated profile response returns the same minimal headers](evidence/Finding-09-Headers/SS-F09-02_missing-headers-api.png)
 
-*__Figure 9.2__ — Authenticated profile response returns the same minimal headers.*
+*__Figure 9.2__ - Authenticated profile response returns the same minimal headers.*
 
 **Remediation:** Add the headers at the nginx layer so they apply to all responses:
 
@@ -659,10 +659,10 @@ Refine the Content-Security-Policy to match the application's real script and re
 
 ---
 
-### Finding 10: Information Disclosure — Server Version Headers and Verbose Database Errors
+### Finding 10: Information Disclosure - Server Version Headers and Verbose Database Errors
 
 **Severity:** Informational &nbsp;|&nbsp; **CVSS v3.1:** 5.3 (`AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N`)
-**CWE:** CWE-200 — Exposure of Sensitive Information · CWE-209 — Generation of Error Message Containing Sensitive Information
+**CWE:** CWE-200 - Exposure of Sensitive Information · CWE-209 - Generation of Error Message Containing Sensitive Information
 **OWASP Top 10 (2021):** A05:2021 Security Misconfiguration
 **Proof captured:** N/A
 
@@ -681,18 +681,18 @@ The verbose errors are the same behaviour that enables the SQL injection in Find
 running software without guesswork, which makes finding a working exploit faster. On its own it is
 not directly exploitable; it accelerates reconnaissance. Each disclosed component should be
 cross-referenced against the **NVD** (https://nvd.nist.gov) for version-specific CVEs as part of
-patch management — e.g. the running nginx, PHP, and MariaDB builds should be checked and patched to
+patch management - e.g. the running nginx, PHP, and MariaDB builds should be checked and patched to
 the latest stable release.
 
 **Evidence:**
 
 ![Response shows nginx Server header and a raw MariaDB error](evidence/Finding-02-SQLi/SS-F02-02_sqli-syntax-error.png)
 
-*__Figure 10.1__ — Response shows nginx Server header and a raw MariaDB error.*
+*__Figure 10.1__ - Response shows nginx Server header and a raw MariaDB error.*
 
 ![Response headers include the X-Powered-By PHP version](evidence/Finding-01-RCE/SS-F01-12_rce-uid-www-data.png)
 
-*__Figure 10.2__ — Response headers include the X-Powered-By PHP version.*
+*__Figure 10.2__ - Response headers include the X-Powered-By PHP version.*
 
 **Remediation:** Suppress version data: set **server_tokens off** in nginx and **expose_php = Off**
 in php.ini. Return generic database errors to clients, as covered in Finding 2. Maintain a patch
@@ -704,18 +704,18 @@ cadence that tracks NVD advisories for the deployed nginx/PHP/MariaDB versions.
 
 A self-registered account is enough to take full control of the server and keep that access after
 logging out. The portal should not go live until the High-risk findings are fixed. The legal risk is
-real, not theoretical: the Information Regulator's first POPIA fine — R5 million against a government
-department in 2023 — came from this same pattern of a security breach and a failure of the duties in
+real, not theoretical: the Information Regulator's first POPIA fine - R5 million against a government
+department in 2023 - came from this same pattern of a security breach and a failure of the duties in
 Sections 19 and 22.
 
 Ten vulnerabilities were found: four High, one Medium, four Low, and one Informational. Two of the
-High findings — the file upload and the SQL injection — are each enough on their own to hand over the
+High findings - the file upload and the SQL injection - are each enough on their own to hand over the
 server and the full database. The bigger problem is how the High findings feed each other (Findings 1
 to 4): what one leaks becomes the way into the next, ending in an admin takeover and access that
 survives logout.
 
 Fix in order of risk: the file upload first, then the SQL injection, then the access-control and
-cross-site-scripting issues. The same root cause runs through all four High findings — user input
+cross-site-scripting issues. The same root cause runs through all four High findings - user input
 reaches sensitive operations with no validation or output encoding. One validation and output-encoding
 standard, applied to every endpoint, fixes the whole class of bug instead of these few cases. The
 authentication, password, enumeration, header, and information-disclosure findings can be handled once
@@ -725,9 +725,9 @@ the High-risk work is done.
 
 ## Standards & References
 
-- **OWASP Top 10 (2021)** — https://owasp.org/Top10/
-- **OWASP Web Security Testing Guide (WSTG)** — https://owasp.org/www-project-web-security-testing-guide/
-- **MITRE CWE** — https://cwe.mitre.org/ (CWE-434, 89, 639, 79, 840, 613, 521, 307, 693, 1021, 200, 209)
-- **CVSS v3.1 Specification** — https://www.first.org/cvss/v3.1/specification-document
-- **NIST National Vulnerability Database (CVE lookup)** — https://nvd.nist.gov/
-- **POPIA** — Protection of Personal Information Act 4 of 2013 (South Africa), Sections 19 & 22
+- **OWASP Top 10 (2021)** - https://owasp.org/Top10/
+- **OWASP Web Security Testing Guide (WSTG)** - https://owasp.org/www-project-web-security-testing-guide/
+- **MITRE CWE** - https://cwe.mitre.org/ (CWE-434, 89, 639, 79, 840, 613, 521, 307, 693, 1021, 200, 209)
+- **CVSS v3.1 Specification** - https://www.first.org/cvss/v3.1/specification-document
+- **NIST National Vulnerability Database (CVE lookup)** - https://nvd.nist.gov/
+- **POPIA** - Protection of Personal Information Act 4 of 2013 (South Africa), Sections 19 & 22

@@ -1,4 +1,4 @@
-# Finding 1 — Unrestricted File Upload → Remote Code Execution
+# Finding 1 - Unrestricted File Upload → Remote Code Execution
 
 > Redacted evidence screenshots for this finding. Flag values, the target domain, credentials, tokens, and personal data are blurred. See the [full report](../../REPORT.md) for context.
 

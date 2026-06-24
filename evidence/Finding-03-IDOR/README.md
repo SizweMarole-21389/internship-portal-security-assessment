@@ -1,4 +1,4 @@
-# Finding 3 — Insecure Direct Object Reference (IDOR)
+# Finding 3 - Insecure Direct Object Reference (IDOR)
 
 > Redacted evidence screenshots for this finding. Flag values, the target domain, credentials, tokens, and personal data are blurred. See the [full report](../../REPORT.md) for context.
 

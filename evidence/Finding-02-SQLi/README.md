@@ -1,4 +1,4 @@
-# Finding 2 — Error-Based SQL Injection
+# Finding 2 - Error-Based SQL Injection
 
 > Redacted evidence screenshots for this finding. Flag values, the target domain, credentials, tokens, and personal data are blurred. See the [full report](../../REPORT.md) for context.
 

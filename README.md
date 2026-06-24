@@ -1,9 +1,9 @@
-# Web Application Penetration Test — Internship Application Portal
+# Web Application Penetration Test - Internship Application Portal
 
 A sanitised, portfolio write-up of a **black-box web application penetration test** against a
 deliberately vulnerable internship-application portal, performed in a controlled lab. The
 assessment started from the position of an ordinary registered user with no source-code or
-backend access — the same starting point as any external attacker — and ended in full server
+backend access - the same starting point as any external attacker - and ended in full server
 compromise and account takeover through a chain of four High-risk vulnerabilities.
 
 > ⚠️ **Ethics & sanitisation.** This is an educational lab report. All client/organisation
@@ -20,7 +20,7 @@ compromise and account takeover through a chain of four High-risk vulnerabilitie
 |---|---------|----------|-----------|-----|------------|
 | 1 | Unrestricted File Upload → Remote Code Execution | **High** | 8.8 | CWE-434 | A03 / A05 |
 | 2 | Error-Based SQL Injection (profile update) | **High** | 8.1 | CWE-89 | A03 |
-| 3 | IDOR — Unauthorised Access to Any Profile | **High** | 6.5 | CWE-639 | A01 |
+| 3 | IDOR - Unauthorised Access to Any Profile | **High** | 6.5 | CWE-639 | A01 |
 | 4 | Stored Cross-Site Scripting (surname field) | **High** | 6.1 | CWE-79 | A03 |
 | 5 | Assignment Logic Flaws (scoring / retakes) | Low | 4.3 | CWE-840 | A04 |
 | 6 | JWT Refresh Token Not Invalidated on Logout | Medium | 5.3 | CWE-613 | A07 |
@@ -29,7 +29,7 @@ compromise and account takeover through a chain of four High-risk vulnerabilitie
 | 9 | Missing HTTP Security Headers | Low | 4.3 | CWE-693 / CWE-1021 | A05 |
 | 10 | Information Disclosure (versions / verbose errors) | Info | 5.3 | CWE-200 / CWE-209 | A05 |
 
-**Result:** 10 vulnerabilities — 4 High, 1 Medium, 4 Low, 1 Informational. Two High findings (file
+**Result:** 10 vulnerabilities - 4 High, 1 Medium, 4 Low, 1 Informational. Two High findings (file
 upload and SQL injection) are each enough on their own to hand over the server and the full database.
 
 ➡️ **[Read the full report → REPORT.md](REPORT.md)**
@@ -59,9 +59,9 @@ no validation or output encoding.**
 
 ## 🛠️ Tools & Techniques
 
-- **Burp Suite Community Edition** — intercepting proxy, request replay, Intruder
-- **curl** — direct crafted requests
-- **Browser DevTools** — rendering / output-encoding verification
+- **Burp Suite Community Edition** - intercepting proxy, request replay, Intruder
+- **curl** - direct crafted requests
+- **Browser DevTools** - rendering / output-encoding verification
 - Manual, hand-built **error-based SQL injection** with MariaDB `extractvalue()` (no sqlmap)
 - WAF blocklist bypass for stored XSS (`<h4 tabindex onfocus>`)
 - JWT decoding and session-handling analysis
