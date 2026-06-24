@@ -145,14 +145,40 @@ Regulator and affected data subjects.
 **Evidence:**
 
 ![Baseline CV upload accepted](evidence/Finding-01-RCE/SS-F01-02_pdf-uploaded-profile.png)
+
+*__Figure 1.1__ — Baseline CV upload accepted.*
+
 ![Server returns 201 Created on upload](evidence/Finding-01-RCE/SS-F01-03_pdf-upload-201.png)
+
+*__Figure 1.2__ — Server returns 201 Created on upload.*
+
 ![Profile API returns the stored file UUID](evidence/Finding-01-RCE/SS-F01-04_profile-uuid-response.png)
+
+*__Figure 1.3__ — Profile API returns the stored file UUID.*
+
 ![Uploaded file reachable at /cv-view/ with no auth](evidence/Finding-01-RCE/SS-F01-05_cvview-pdf-accessible.png)
+
+*__Figure 1.4__ — Uploaded file reachable at /cv-view/ with no auth.*
+
 ![shell.php upload accepted with 201](evidence/Finding-01-RCE/SS-F01-10_shell-php-confirmed.png)
+
+*__Figure 1.5__ — Shell.php upload accepted with 201.*
+
 ![id returns uid=33(www-data), confirming RCE](evidence/Finding-01-RCE/SS-F01-12_rce-uid-www-data.png)
+
+*__Figure 1.6__ — Id returns uid=33(www-data), confirming RCE.*
+
 ![Directory listing via the webshell](evidence/Finding-01-RCE/SS-F01-14_rce-cvview-ls-la.png)
+
+*__Figure 1.7__ — Directory listing via the webshell.*
+
 ![/etc/passwd read through the webshell](evidence/Finding-01-RCE/SS-F01-15_rce-etc-passwd.png)
+
+*__Figure 1.8__ — /etc/passwd read through the webshell.*
+
 ![Listing of /var/www via the webshell](evidence/Finding-01-RCE/SS-F01-16_rce-var-www-ls.png)
+
+*__Figure 1.9__ — Listing of /var/www via the webshell.*
 
 **Remediation:** Validate uploads by file content, not the client-supplied filename or
 Content-Type. For PDFs, verify the **%PDF** magic bytes. Discard the original filename and
@@ -219,14 +245,40 @@ Section 22 obligation to notify the Information Regulator and affected data subj
 **Evidence:**
 
 ![Single quote returns a raw MariaDB syntax error](evidence/Finding-02-SQLi/SS-F02-02_sqli-syntax-error.png)
+
+*__Figure 2.1__ — Single quote returns a raw MariaDB syntax error.*
+
 ![extractvalue leaks the MariaDB version](evidence/Finding-02-SQLi/SS-F02-03_sqli-version-mariadb.png)
+
+*__Figure 2.2__ — Extractvalue leaks the MariaDB version.*
+
 ![Schema enumeration via information_schema](evidence/Finding-02-SQLi/SS-F02-04_sqli-database-enum.png)
+
+*__Figure 2.3__ — Schema enumeration via information_schema.*
+
 ![Table enumeration in the active database](evidence/Finding-02-SQLi/SS-F02-06_sqli-table-enum.png)
+
+*__Figure 2.4__ — Table enumeration in the active database.*
+
 ![Discovery of the users table](evidence/Finding-02-SQLi/SS-F02-10_sqli-table-enum-users.png)
+
+*__Figure 2.5__ — Discovery of the users table.*
+
 ![Discovery of the assignments table](evidence/Finding-02-SQLi/SS-F02-11_sqli-table-enum-assignments.png)
+
+*__Figure 2.6__ — Discovery of the assignments table.*
+
 ![Discovery of the user_answers table](evidence/Finding-02-SQLi/SS-F02-12_sqli-table-enum-user-answers.png)
+
+*__Figure 2.7__ — Discovery of the user_answers table.*
+
 ![Discovery of the cvs table](evidence/Finding-02-SQLi/SS-F02-13_sqli-table-enum-cvs.png)
+
+*__Figure 2.8__ — Discovery of the cvs table.*
+
 ![Discovery of the token_blocklist table](evidence/Finding-02-SQLi/SS-F02-14_sqli-table-enum-token-blocklist.png)
+
+*__Figure 2.9__ — Discovery of the token_blocklist table.*
 
 **Remediation:** Use parameterised statements for every query that includes user input,
 across the whole codebase, so SQL logic is separated from data. Stop returning raw database
@@ -273,12 +325,32 @@ download in Finding 1.
 **Evidence:**
 
 ![Leaderboard page listing intern nicknames](evidence/Finding-03-IDOR/SS-F03-02_leaderboard-page.png)
+
+*__Figure 3.1__ — Leaderboard page listing intern nicknames.*
+
 ![Leaderboard API response with full nickname list](evidence/Finding-03-IDOR/SS-F03-03_idor-leaderboard-nicknames.png)
+
+*__Figure 3.2__ — Leaderboard API response with full nickname list.*
+
 ![Privileged profile returned to an intern token](evidence/Finding-03-IDOR/SS-F03-12_idor-admin-profile-flag.png)
+
+*__Figure 3.3__ — Privileged profile returned to an intern token.*
+
 ![Another intern's full profile retrieved](evidence/Finding-03-IDOR/SS-F03-13_idor-intern001-response.png)
+
+*__Figure 3.4__ — Another intern's full profile retrieved.*
+
 ![A further intern profile retrieved](evidence/Finding-03-IDOR/SS-F03-15_idor-intern003-response.png)
+
+*__Figure 3.5__ — A further intern profile retrieved.*
+
 ![A further intern profile retrieved](evidence/Finding-03-IDOR/SS-F03-16_idor-intern005-response.png)
+
+*__Figure 3.6__ — A further intern profile retrieved.*
+
 ![Confirms the vulnerability scales across the user base](evidence/Finding-03-IDOR/SS-F03-18_idor-intern085-response.png)
+
+*__Figure 3.7__ — Confirms the vulnerability scales across the user base.*
 
 **Remediation:** Remove the **?nickname=** parameter and always return the authenticated
 user's own profile based on JWT claims. If lookups by nickname are genuinely required,
@@ -341,11 +413,28 @@ variant walked straight through.
 **Evidence:**
 
 ![Surname reflected unencoded; other fields entity-encoded](evidence/Finding-04-XSS/SS-F04-03_xss-field-comparison-browser.png)
+
+*__Figure 4.1__ — Surname reflected unencoded; other fields entity-encoded.*
+
 ![Baseline script-tag payload behaviour](evidence/Finding-04-XSS/SS-F04-04_xss-script-tag-profile-response.png)
+
+*__Figure 4.2__ — Baseline script-tag payload behaviour.*
+
 ![h4 bypass payload accepted at registration with 201](evidence/Finding-04-XSS/SS-F04-10_xss-h4-registration-201.png)
+
+*__Figure 4.3__ — H4 bypass payload accepted at registration with 201.*
+
 ![Confirmation of the accepted payload](evidence/Finding-04-XSS/SS-F04-11_xss-h4-registration-201-2.png)
+
+*__Figure 4.4__ — Confirmation of the accepted payload.*
+
 ![Payload returned unencoded in the profile API response](evidence/Finding-04-XSS/SS-F04-15_xss-h4-profile-api.png)
+
+*__Figure 4.5__ — Payload returned unencoded in the profile API response.*
+
 ![Stored payload rendered unencoded in the profile form](evidence/Finding-04-XSS/SS-F04-19_xss-patch-profile-browser.png)
+
+*__Figure 4.6__ — Stored payload rendered unencoded in the profile form.*
 
 **Remediation:** Strip HTML from name fields on input and allow only letters, spaces, hyphens,
 and apostrophes. Apply context-aware output encoding when rendering user data. Treat the WAF as
@@ -385,9 +474,20 @@ assessment, not access to other users' data or the system itself, so it is rated
 **Evidence:**
 
 ![Assignment dashboard before submission](evidence/Finding-05-Assignment/SS-F05-01_assignment-dashboard.png)
+
+*__Figure 5.1__ — Assignment dashboard before submission.*
+
 ![Submission confirmation in the web UI](evidence/Finding-05-Assignment/SS-F05-05_assignment-submit-confirm.png)
+
+*__Figure 5.2__ — Submission confirmation in the web UI.*
+
 ![Start endpoint called again after completion](evidence/Finding-05-Assignment/SS-F05-13_assignment-retake-unlimited.png)
+
+*__Figure 5.3__ — Start endpoint called again after completion.*
+
 ![New submission issued, confirming unlimited retakes](evidence/Finding-05-Assignment/SS-F05-14_assignment-retake-confirmed.png)
+
+*__Figure 5.4__ — New submission issued, confirming unlimited retakes.*
 
 **Remediation:** Score submissions server-side and only return any completion token once a defined
 pass threshold is met. Reject any start call once a submission exists for that user and assignment.
@@ -425,10 +525,24 @@ no longer a one-time problem; it gives lasting access that survives the user log
 **Evidence:**
 
 ![Login issues both access and refresh tokens](evidence/Finding-06-JWT/SS-F06-01_login-response-tokens.png)
+
+*__Figure 6.1__ — Login issues both access and refresh tokens.*
+
 ![Decoded token showing the jti and type claims](evidence/Finding-06-JWT/SS-F06-02_jwt-decoded.png)
+
+*__Figure 6.2__ — Decoded token showing the jti and type claims.*
+
 ![DELETE logout request with the access token](evidence/Finding-06-JWT/SS-F06-03_logout-request.png)
+
+*__Figure 6.3__ — DELETE logout request with the access token.*
+
 ![Reused access token returns 401 TOKEN_REVOKED](evidence/Finding-06-JWT/SS-F06-05_access-token-blocked-401.png)
+
+*__Figure 6.4__ — Reused access token returns 401 TOKEN_REVOKED.*
+
 ![Refresh token still mints a new access token after logout](evidence/Finding-06-JWT/SS-F06-06_refresh-token-new-access.png)
+
+*__Figure 6.5__ — Refresh token still mints a new access token after logout.*
 
 **Remediation:** Blocklist both the access and refresh token **jti** on logout. The
 **token_blocklist** table already exists, so add one INSERT for the refresh token's **jti** in the
@@ -460,6 +574,8 @@ credentials. The admin hash is subject to the same risk.
 
 ![Eight-digit numeric password accepted with 201 Created](evidence/Finding-07-WeakPassword/SS-F07-01_weak-password-accepted.png)
 
+*__Figure 7.1__ — Eight-digit numeric password accepted with 201 Created.*
+
 **Remediation:** Add complexity rules to the existing length check (upper, lower, digit, special),
 enforced server-side. Optionally reject breached passwords via the HaveIBeenPwned k-anonymity API.
 
@@ -488,6 +604,8 @@ against confirmed accounts with no server-side restriction.
 **Evidence:**
 
 ![30 attempts all return 401 with no 429 or lockout](evidence/Finding-08-RateLimit/SS-F08-01_ratelimit-ffuf-bruteforce.png)
+
+*__Figure 8.1__ — 30 attempts all return 401 with no 429 or lockout.*
 
 **Remediation:** Apply per-account rate limiting as the primary control (per-IP limits are easily
 evaded by rotating addresses), and add a CAPTCHA or step-up challenge after repeated failures.
@@ -520,7 +638,12 @@ rather than direct vulnerabilities.
 **Evidence:**
 
 ![Login response shows none of the five security headers](evidence/Finding-09-Headers/SS-F09-01_missing-security-headers.png)
+
+*__Figure 9.1__ — Login response shows none of the five security headers.*
+
 ![Authenticated profile response returns the same minimal headers](evidence/Finding-09-Headers/SS-F09-02_missing-headers-api.png)
+
+*__Figure 9.2__ — Authenticated profile response returns the same minimal headers.*
 
 **Remediation:** Add the headers at the nginx layer so they apply to all responses:
 
@@ -564,7 +687,12 @@ the latest stable release.
 **Evidence:**
 
 ![Response shows nginx Server header and a raw MariaDB error](evidence/Finding-02-SQLi/SS-F02-02_sqli-syntax-error.png)
+
+*__Figure 10.1__ — Response shows nginx Server header and a raw MariaDB error.*
+
 ![Response headers include the X-Powered-By PHP version](evidence/Finding-01-RCE/SS-F01-12_rce-uid-www-data.png)
+
+*__Figure 10.2__ — Response headers include the X-Powered-By PHP version.*
 
 **Remediation:** Suppress version data: set **server_tokens off** in nginx and **expose_php = Off**
 in php.ini. Return generic database errors to clients, as covered in Finding 2. Maintain a patch
