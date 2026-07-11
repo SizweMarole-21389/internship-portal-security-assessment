@@ -11,16 +11,16 @@
 
 The endpoint **GET /api/v1/profile/** accepts an optional **?nickname=**
 parameter. When supplied, the server returns the matching profile without checking that the
-caller is authorised to view it. Any valid intern token can therefore read any user's profile,
+caller is authorised to view it. Any valid user token can therefore read any user's profile,
 including the admin account. The leaderboard endpoint returns every registered nickname,
 providing a complete target list.
 
 ## Reproduction Steps
 
-1. Log in as any intern and obtain an access token.
+1. Log in as any user and obtain an access token.
 
-   ![Leaderboard page listing intern nicknames](../evidence/Finding-03-IDOR/SS-F03-02_leaderboard-page.png)
-   *__Figure 3.1__ - Leaderboard page listing intern nicknames.*
+   ![Leaderboard page listing user nicknames](../evidence/Finding-03-IDOR/SS-F03-02_leaderboard-page.png)
+   *__Figure 3.1__ - Leaderboard page listing user nicknames.*
 
    ![Leaderboard API response with full nickname list](../evidence/Finding-03-IDOR/SS-F03-03_idor-leaderboard-nicknames.png)
    *__Figure 3.2__ - Leaderboard API response with full nickname list.*
@@ -29,32 +29,32 @@ providing a complete target list.
 
    ```http
    GET /api/v1/profile/?nickname=admin
-   Authorization: Bearer <intern_token>
+   Authorization: Bearer <user_token>
    ```
 
 3. The response returns that user's full profile, including **id**, email, and other
    personal fields, with no authorisation check.
 
-   ![Privileged profile returned to an intern token](../evidence/Finding-03-IDOR/SS-F03-12_idor-admin-profile-flag.png)
-   *__Figure 3.3__ - Privileged profile returned to an intern token.*
+   ![Privileged profile returned to an user token](../evidence/Finding-03-IDOR/SS-F03-12_idor-admin-profile-flag.png)
+   *__Figure 3.3__ - Privileged profile returned to an user token.*
 
-   ![Another intern's full profile retrieved](../evidence/Finding-03-IDOR/SS-F03-13_idor-intern001-response.png)
-   *__Figure 3.4__ - Another intern's full profile retrieved.*
+   ![Another user's full profile retrieved](../evidence/Finding-03-IDOR/SS-F03-13_idor-user001-response.png)
+   *__Figure 3.4__ - Another user's full profile retrieved.*
 
-   ![A further intern profile retrieved](../evidence/Finding-03-IDOR/SS-F03-15_idor-intern003-response.png)
-   *__Figure 3.5__ - A further intern profile retrieved.*
+   ![A further user profile retrieved](../evidence/Finding-03-IDOR/SS-F03-15_idor-user003-response.png)
+   *__Figure 3.5__ - A further user profile retrieved.*
 
-   ![A further intern profile retrieved](../evidence/Finding-03-IDOR/SS-F03-16_idor-intern005-response.png)
-   *__Figure 3.6__ - A further intern profile retrieved.*
+   ![A further user profile retrieved](../evidence/Finding-03-IDOR/SS-F03-16_idor-user005-response.png)
+   *__Figure 3.6__ - A further user profile retrieved.*
 
-   ![Confirms the vulnerability scales across the user base](../evidence/Finding-03-IDOR/SS-F03-18_idor-intern085-response.png)
+   ![Confirms the vulnerability scales across the user base](../evidence/Finding-03-IDOR/SS-F03-18_idor-user085-response.png)
    *__Figure 3.7__ - Confirms the vulnerability scales across the user base.*
 
 ## Business Impact
 
-The leaderboard lists the nicknames of all 120+ interns, and any one can
+The leaderboard lists the nicknames of all 120+ users, and any one can
 be passed to **?nickname=** to read that user's name, email, university, degree, and CV
-filename - using nothing more than a standard intern token. The exposure covers every
+filename - using nothing more than a standard user token. The exposure covers every
 registered user, not just the administrator account. The CV filenames returned here also feed
 the unauthenticated download in Finding 1, so a profile read is enough to then retrieve each
 candidate's actual documents. On its own, the disclosure of names, emails, universities, and

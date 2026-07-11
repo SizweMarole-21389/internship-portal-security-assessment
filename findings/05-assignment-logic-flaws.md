@@ -43,7 +43,7 @@ scored roughly 88% - and submissions are accepted with no minimum time.
 
 Anyone who reaches the submission endpoint obtains the marker, and unlimited
 retakes plus weak essay grading make the leaderboard score worthless as a measure of anything. An
-intern who knows this can score high without doing the work, which is unfair to other candidates
+user who knows this can score high without doing the work, which is unfair to other candidates
 and defeats the assessment. The likelihood is high, but the flaw only damages the fairness of the
 assessment, not access to other users' data or the system itself, so it is rated Low.
 

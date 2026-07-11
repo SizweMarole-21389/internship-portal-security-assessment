@@ -1,7 +1,7 @@
-# Web Application Penetration Test - Internship Application Portal
+# Web Application Penetration Test - Web Application Portal
 
 A sanitised, portfolio write-up of a **black-box web application penetration test** against a
-deliberately vulnerable internship-application portal, performed in a controlled lab. The
+deliberately vulnerable web application portal, performed in a controlled lab. The
 assessment started from the position of an ordinary registered user with no source-code or
 backend access - the same starting point as any external attacker - and ended in full server
 compromise and account takeover through a chain of four High-risk vulnerabilities.
@@ -13,24 +13,24 @@ compromise and account takeover through a chain of four High-risk vulnerabilitie
 > one. Testing was authorised and conducted in a lab environment.
 
 **Assessor:** Sizwe Marole &nbsp;|&nbsp; **Assessment type:** Black-box web application penetration test
-**Target (anonymised):** `interns.target.local` &nbsp;|&nbsp; **Report version:** 2.1 (sanitised for public release)
+**Target (anonymised):** `portal.target.local` &nbsp;|&nbsp; **Report version:** 2.1 (sanitised for public release)
 
 ---
 
 ## Executive Summary
 
-A black-box penetration test was conducted against an internship application portal
-from the position of a registered intern with no access to source code or backend
+A black-box penetration test was conducted against an web application portal
+from the position of a registered user with no access to source code or backend
 configuration - the same starting point available to any external attacker. The
 entire web application was in scope; the underlying hosting infrastructure was out of
 scope. Eleven vulnerabilities were identified: **four High, one Medium, four Low, and two
 Informational.**
 
-Four of the eleven are High. The worst is an unrestricted file upload: a normal intern
+Four of the eleven are High. The worst is an unrestricted file upload: a normal user
 account can run commands on the server and take it over completely with a single
 request. A second, in the profile-update endpoint, leaks the whole database on one
 authenticated request, including the email address and password hash of every user.
-The other two let any intern read any other user's private profile, and store
+The other two let any user read any other user's private profile, and store
 JavaScript that executes in another user's browser, including the administrator's.
 
 Each issue is serious on its own. Chained together they are worse. The database leak
@@ -40,7 +40,7 @@ The stored JavaScript can capture a live session token; if an administrator view
 malicious profile, the attacker inherits the admin session. Logging out does not help,
 because the refresh token remains valid and a new session can be minted from it.
 
-The end result is full account takeover and a level of access a normal intern should
+The end result is full account takeover and a level of access a normal user should
 never have. As it stands the portal is critically vulnerable and should not go live
 until the High-risk issues are fixed - in order: file upload, SQL injection, then the
 access-control and cross-site-scripting issues.
@@ -104,7 +104,7 @@ All testing was manual. Burp Suite Community Edition intercepted and replayed re
 rendered. No automated scanners were run; the SQL injection was extracted by hand with
 error-based `extractvalue()` payloads rather than a tool such as sqlmap.
 
-The application was first walked through with a normal intern account, mapping every
+The application was first walked through with a normal user account, mapping every
 page, form, and API endpoint while Burp recorded the traffic. The file upload, the input
 fields, the access-control checks, and the login flow were marked as priority test areas.
 Each endpoint was then tested individually: a clean request first to observe normal

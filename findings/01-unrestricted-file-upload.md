@@ -12,7 +12,7 @@
 The CV upload section accepts any file with no validation of extension,
 Content-Type, or content. Uploaded files are stored inside the **cv-view/** directory,
 which sits in the Apache web root with PHP execution enabled, and the profile API returns
-the file's UUID name. A registered intern can upload a PHP webshell, read its path from the
+the file's UUID name. A registered user can upload a PHP webshell, read its path from the
 profile endpoint, and run operating-system commands as **www-data** with a single request.
 The same directory is served without authentication, so any uploaded file can be downloaded
 by anyone who knows the UUID.
